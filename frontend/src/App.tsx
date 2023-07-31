@@ -1,6 +1,12 @@
+import { useState } from "react";
 import "./App.css";
 
 function App() {
+  const [total, setTotal] = useState(0);
+  const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(total);
+  };
   return (
     <>
       <header>
@@ -38,7 +44,16 @@ function App() {
               Youtube.
             </a>
           </p>
-          <button>Mint a BoredApeYach Fake</button>
+          <hr />
+          <form onSubmit={handlerSubmit}>
+            <input
+              type="number"
+              min={0}
+              placeholder="Mint your NFT"
+              onChange={({ target }) => setTotal(Number(target.value))}
+            />
+            <button disabled={!total}>Mint a BoredApeYach Fake</button>
+          </form>
         </article>
       </section>
       <footer className="footer">

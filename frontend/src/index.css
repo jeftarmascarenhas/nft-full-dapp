@@ -14,6 +14,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 header,
 section,
 footer {
@@ -73,6 +77,22 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+input {
+  display: block;
+  border-radius: 8px;
+  padding: 0.8em 1.2em;
+  border: 1px solid #424242;
+  background-color: #424242;
+}
+
+form {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -83,5 +103,9 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+  input {
+    background-color: #f9f9f9;
+    color: #fff;
   }
 }
