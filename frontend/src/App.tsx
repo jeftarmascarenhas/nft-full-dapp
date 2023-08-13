@@ -1,5 +1,10 @@
 import { useState } from "react";
 import "./App.css";
+import { useAccount, useConnect, useContractWrite } from "wagmi";
+import NftArtifact from "./NftArtifact.json";
+import { parseEther } from "viem";
+
+NftArtifact.address;
 
 function App() {
   const [total, setTotal] = useState(0);
@@ -7,6 +12,43 @@ function App() {
     event.preventDefault();
     console.log(total);
   };
+
+  const {
+    error,
+    write,
+    data,
+    isLoading: isMintLoading,
+  } = useContractWrite({
+    address: `0x866dc9f7F81083D21346b8B45b08a40306458178`,
+    abi: NftArtifact.abi,
+    functionName: "mint",
+  });
+
+  if (data) {
+    console.log("data =>", data);
+  }
+
+  if (error?.message) {
+    console.log("error =>", error?.message);
+  }
+
+  const { isConnected } = useAccount();
+  const { connect, connectors, isLoading } = useConnect();
+  const [metamask] = connectors;
+
+  function makeMint() {
+    if (!isConnected) {
+      connect({ connector: metamask });
+      return;
+    }
+    const price = 0.0001;
+    const value = parseEther(String(total * price));
+    write({
+      args: [total],
+      value,
+    });
+  }
+
   return (
     <>
       <header>
@@ -52,7 +94,12 @@ function App() {
               placeholder="Mint your NFT"
               onChange={({ target }) => setTotal(Number(target.value))}
             />
-            <button disabled={!total}>Mint a BoredApeYach Fake</button>
+            <button disabled={!total} onClick={makeMint}>
+              {isLoading || isMintLoading
+                ? "Loading..."
+                : "Mint a BoredApeYach Fake"}
+            </button>
+            {isConnected && <p className="text-center">You are connected</p>}
           </form>
         </article>
       </section>

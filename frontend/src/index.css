@@ -68,6 +68,7 @@ button {
   cursor: pointer;
   transition: background-color 0.25s;
   width: 100%;
+  outline: none;
 }
 button:hover {
   background-color: #a33ac3;
