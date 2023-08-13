@@ -10,7 +10,6 @@ function App() {
   const [total, setTotal] = useState(0);
   const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(total);
   };
 
   const {
@@ -30,6 +29,7 @@ function App() {
 
   if (error?.message) {
     console.log("error =>", error?.message);
+    console.log("error =>", error?.stack);
   }
 
   const { isConnected } = useAccount();
