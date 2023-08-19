@@ -19,7 +19,7 @@ function App() {
     data,
     isLoading: isMintLoading,
   } = useContractWrite({
-    address: `0x866dc9f7F81083D21346b8B45b08a40306458178`,
+    address: `0x51CBe51d66dFd14dE39f7312f27e746f716Ce96f`,
     abi: NftArtifact.abi,
     functionName: "mint",
   });
