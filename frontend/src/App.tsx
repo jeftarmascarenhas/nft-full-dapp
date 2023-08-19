@@ -2,19 +2,20 @@ import { useState } from "react";
 import "./App.css";
 import { useAccount, useConnect, useContractWrite } from "wagmi";
 import NftArtifact from "./NftArtifact.json";
-import { parseEther } from "viem";
+import { parseEther, BaseError, ContractFunctionRevertedError } from "viem";
 
-NftArtifact.address;
+const errorMapping: Record<string, string> = {
+  MaxSupplyExceeded: "Max supply exceeded",
+  ValueNotEnough: "Value isn't enough",
+  MaxPerWallet: "Max per wallet exceeded",
+  FailedTransfer: "Sorry, isn't possible do the transfer, try again.",
+  default: "Ops! There is some error.",
+};
 
 function App() {
-  const [total, setTotal] = useState(0);
-  const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  };
-
+  const [total, setTotal] = useState(1);
   const {
-    error,
-    write,
+    writeAsync,
     data,
     isLoading: isMintLoading,
   } = useContractWrite({
@@ -27,26 +28,35 @@ function App() {
     console.log("data =>", data);
   }
 
-  if (error?.message) {
-    console.log("error =>", error?.message);
-    console.log("error =>", error?.stack);
-  }
-
   const { isConnected } = useAccount();
   const { connect, connectors, isLoading } = useConnect();
   const [metamask] = connectors;
 
-  function makeMint() {
-    if (!isConnected) {
-      connect({ connector: metamask });
-      return;
+  async function handlerSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      if (!isConnected) {
+        connect({ connector: metamask });
+        return;
+      }
+      const price = 0.0001;
+      const value = parseEther(String(total * price));
+      await writeAsync({
+        args: [total],
+        value,
+      });
+    } catch (err) {
+      if (err instanceof BaseError) {
+        const revertError = err.walk(
+          (er) => er instanceof ContractFunctionRevertedError
+        );
+        if (revertError instanceof ContractFunctionRevertedError) {
+          const errorName = revertError.data?.errorName ?? "default";
+          console.log("revertCustomError", errorName);
+          alert(errorMapping[errorName]);
+        }
+      }
     }
-    const price = 0.0001;
-    const value = parseEther(String(total * price));
-    write({
-      args: [total],
-      value,
-    });
   }
 
   return (
@@ -90,11 +100,12 @@ function App() {
           <form onSubmit={handlerSubmit}>
             <input
               type="number"
-              min={0}
+              min={1}
+              value={total}
               placeholder="Mint your NFT"
               onChange={({ target }) => setTotal(Number(target.value))}
             />
-            <button disabled={!total} onClick={makeMint}>
+            <button disabled={isLoading || isMintLoading} type="submit">
               {isLoading || isMintLoading
                 ? "Loading..."
                 : "Mint a BoredApeYach Fake"}
