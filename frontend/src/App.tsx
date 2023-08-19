@@ -21,7 +21,12 @@ function App() {
             alt="NFT Choose - BoredApeYachFake"
           />
           <p>
-            <a href="#">Open on github</a>
+            <a
+              href="https://github.com/jeftarmascarenhas/nft-full-dapp"
+              target="_blank"
+            >
+              Open on github
+            </a>
           </p>
         </div>
         <article className="article">
