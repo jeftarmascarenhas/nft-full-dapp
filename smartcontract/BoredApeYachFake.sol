@@ -25,17 +25,16 @@ contract BoredApeYachFake is ERC721A, Ownable, Pausable {
 
     // You can use this url https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/
     string private _baseTokenURI;
-    uint256 private _maxSupply = 10;
-    uint256 private _pricePerToken = 1 ether;
-    uint256 constant private _MAX_PER_WALLET = 2;
+    uint256 public  _maxSupply = 100;
+    uint256 public _pricePerToken = 0.0001 ether;
+    uint256 constant public  _MAX_PER_WALLET = 2;
 
-    mapping(address => uint8) public walletMinted;
+    mapping(address => uint256) public walletMinted;
 
     constructor(
         string memory uri_
     ) ERC721A("BoredApeYachFake", "BAYC") {
         _baseTokenURI = uri_;
-        _mint(msg.sender, 2);
     }
 
     function mint(uint256 quantity_) external payable whenNotPaused {
@@ -52,7 +51,7 @@ contract BoredApeYachFake is ERC721A, Ownable, Pausable {
         }
 
         _mint(msg.sender, quantity_);
-        walletMinted[msg.sender] += 1;
+        walletMinted[msg.sender] += quantity_;
     }
 
     function withdraw() external onlyOwner {
