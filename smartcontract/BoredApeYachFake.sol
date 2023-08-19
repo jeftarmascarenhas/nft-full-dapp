@@ -15,7 +15,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 */
 
 // Smart contract is for my study and youtube channel. It isn't auditable.
-// see the contract https://goerli.etherscan.io/address/0x51cbe51d66dfd14de39f7312f27e746f716ce96f
+// see the contract https://goerli.etherscan.io/address/0x51CBe51d66dFd14dE39f7312f27e746f716Ce96f#code
 contract BoredApeYachFake is ERC721A, Ownable, Pausable {
     error ValueNotEnough(uint256 value);
     error MaxSupplyExcesseded(uint256 quantity);
